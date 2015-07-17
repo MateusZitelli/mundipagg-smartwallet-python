@@ -11,5 +11,4 @@ class JsonRequest:
     def submit(self):
         response = requests.post(self.url, data=self.jsonData,
                                  headers=self.header)
-        print(self.header)
         return response

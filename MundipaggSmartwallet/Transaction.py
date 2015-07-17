@@ -1,16 +1,13 @@
 import consts
-from Submitable import Submitable
+from Submitable import Submitable, PrintableResponse
 
 
-class Transaction:
-    def __init__(self, AccountKey, AccountReference, Acquirer, DbaName,
-                 DocumentNumber, DocumentType, Errors, LegalName, RequestKey):
-        self.AccountReference = AccountReference
-        self.LegalName = LegalName
-        self.DbaName = DbaName
-        self.DocumentNumber = DocumentNumber
-        self.DocumentType = DocumentType
+class Transaction(PrintableResponse):
+    def __init__(self, CreditFinancialMovementCollection, RequestKey,
+                 Errors=None):
+        self.CreditFinancialMovementCollection = CreditFinancialMovementCollection
         self.RequestKey = RequestKey
+        self.Errors = Errors
 
 
 class TransactionCreator(Submitable):
@@ -21,4 +18,4 @@ class TransactionCreator(Submitable):
 
     def create(self, smartWalletKey):
         transactionURL = consts.Mundipagg['URLS']['Transaction']
-        return super(TransactionCreator, self).create(transactionURL, Transaction)
+        return super(TransactionCreator, self).create(transactionURL, Transaction, smartWalletKey)

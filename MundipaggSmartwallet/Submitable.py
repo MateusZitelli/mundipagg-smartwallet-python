@@ -1,5 +1,7 @@
 import json
 import requests
+import inspect
+
 import Utils
 
 
@@ -21,25 +23,38 @@ class Submitable:
     def handleResponse(self, response):
         responseJson = response.json()
 
-        if response.status_code != requests.codes.ok:
+        try:
+            success = responseJson.pop('Success')
+        except KeyError:
+            success = None
+
+        errors = responseJson.pop('Errors')
+
+        # Check for success,
+        if success is not None and not success or len(errors) != 0:
             descriptions = []
 
-            for err in responseJson['Errors']:
+            for err in errors:
                 descriptions.append(err)
 
             raise ErrorResponse(descriptions)
 
-        responseDict = json.loads(response.json())
-        return responseDict
+        return responseJson
 
     def create(self, creationUrl, ResponseClass, smartWalletKey):
         jsonData = self.toJSON(smartWalletKey)
-        print(jsonData)
 
         Req = Utils.JsonRequest(creationUrl, jsonData, header={
             "SmartWalletKey": smartWalletKey
         })
 
         response = Req.submit()
-        resposeDict = self.handleResponse(response)
-        return ResponseClass(*resposeDict)
+        responseDict = self.handleResponse(response)
+        responseClassArgs = inspect.getargspec(ResponseClass.__init__)[0]
+        desiredValues = {k: v for k, v in responseDict.items() if k in responseClassArgs}
+        return ResponseClass(**desiredValues)
+
+class PrintableResponse:
+    def __repr__(self):
+        attrs = {k: v for k, v in self.__dict__.items() if v}
+        return "%s(%s)" % (self.__class__.__name__, str(attrs))

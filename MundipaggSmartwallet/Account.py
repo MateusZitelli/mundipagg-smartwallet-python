@@ -1,11 +1,13 @@
 import consts
-from Submitable import Submitable
+from Submitable import Submitable, PrintableResponse
 
 
-class Account:
-    def __init__(self, AccountKey, AccountReference, Acquirer, DbaName,
-                 DocumentNumber, DocumentType, Errors, LegalName, RequestKey):
+class Account(PrintableResponse):
+    def __init__(self, AccountKey=None, AccountReference=None, Acquirer=None, DbaName=None,
+                 DocumentNumber=None, DocumentType=None, Errors=None, LegalName=None, RequestKey=None):
+        self.AccountKey = AccountKey
         self.AccountReference = AccountReference
+        self.Acquirer=Acquirer
         self.LegalName = LegalName
         self.DbaName = DbaName
         self.DocumentNumber = DocumentNumber
@@ -33,3 +35,4 @@ class AccountCreator(Submitable):
     def create(self, smartWalletKey):
         accountURL = consts.Mundipagg['URLS']['Account']
         return super(AccountCreator, self).create(accountURL, Account, smartWalletKey)
+
