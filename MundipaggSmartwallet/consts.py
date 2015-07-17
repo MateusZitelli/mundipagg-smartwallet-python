@@ -1,4 +1,7 @@
-BASE_URL = 'https://smartwallet.mundipaggone.com/'
+BASE_URL = 'http://smartwalletstaging.mundipagg.com/'
 Mundipagg = {
-    'URLS': {'Account': BASE_URL + 'Account/'}
+    'URLS': {
+        'Account': BASE_URL + 'Account/',
+        'Transaction': BASE_URL + 'Transaction/'
+    }
 }

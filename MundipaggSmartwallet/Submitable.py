@@ -1,15 +1,6 @@
 import json
 import requests
 import Utils
-import xml.etree.ElementTree as etree
-
-DataContract = "{http://schemas.datacontract.org/2004/07/SmartWalletService.DataContract}"
-
-NODES = {
-    "success": DataContract + 'Success',
-    "ErrorItem": DataContract + 'ErrorItem',
-    "Description": DataContract + 'Description',
-}
 
 
 class ErrorResponse(BaseException):
@@ -28,18 +19,13 @@ class Submitable:
         return jsonData
 
     def handleResponse(self, response):
-        try:
-            xmlTree = etree.fromstring(response.content)
-        except etree.ParseError:
-            raise
+        responseJson = response.json()
 
         if response.status_code != requests.codes.ok:
             descriptions = []
-            errorItemPath = './/' + NODES["ErrorItem"]
 
-            for el in xmlTree.findall(errorItemPath):
-                descriptionNode = el.find(NODES["Description"])
-                descriptions.append(descriptionNode.text)
+            for err in responseJson['Errors']:
+                descriptions.append(err)
 
             raise ErrorResponse(descriptions)
 
@@ -48,11 +34,12 @@ class Submitable:
 
     def create(self, creationUrl, ResponseClass, smartWalletKey):
         jsonData = self.toJSON(smartWalletKey)
+        print(jsonData)
 
         Req = Utils.JsonRequest(creationUrl, jsonData, header={
-            "SmarWalletKey": smartWalletKey
+            "SmartWalletKey": smartWalletKey
         })
 
         response = Req.submit()
         resposeDict = self.handleResponse(response)
-        return ResponseClass(*responseDict)
+        return ResponseClass(*resposeDict)
