@@ -1,5 +1,4 @@
 import json
-import requests
 import inspect
 
 import Utils
@@ -30,7 +29,8 @@ class Submitable:
 
         errors = responseJson.pop('Errors')
 
-        # Check for success,
+        # If not succeed or in case of success is None check if there is
+        # errors
         if success is not None and not success or len(errors) != 0:
             descriptions = []
 
