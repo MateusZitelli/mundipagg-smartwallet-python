@@ -1,5 +1,5 @@
-import MundipaggSmartwallet.consts
-import MundipaggSmartwallet.Utils
+import MundipaggSmartwallet.consts as consts
+import MundipaggSmartwallet.Utils as Utils
 from MundipaggSmartwallet.Submitable import Submitable, PrintableResponse, ErrorResponse
 
 transactionURL = consts.Mundipagg['URLS']['Transaction']

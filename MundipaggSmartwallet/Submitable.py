@@ -1,7 +1,7 @@
 import json
 import inspect
 
-import MundipaggSmartwallet.Utils
+import MundipaggSmartwallet.Utils as Utils
 
 
 class ErrorResponse(BaseException):

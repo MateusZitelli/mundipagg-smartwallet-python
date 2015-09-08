@@ -1,4 +1,4 @@
-import MundipaggSmartwallet.consts
+import MundipaggSmartwallet.consts as consts
 from MundipaggSmartwallet.Submitable import Submitable, PrintableResponse
 
 
