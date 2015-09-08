@@ -1,5 +1,5 @@
-import consts
-from Submitable import Submitable, PrintableResponse
+import MundipaggSmartwallet.consts
+from MundipaggSmartwallet.Submitable import Submitable, PrintableResponse
 
 
 class Account(PrintableResponse):

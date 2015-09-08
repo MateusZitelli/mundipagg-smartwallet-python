@@ -1,11 +1,32 @@
-import consts
-from Submitable import Submitable, PrintableResponse
+import MundipaggSmartwallet.consts
+import MundipaggSmartwallet.Utils
+from MundipaggSmartwallet.Submitable import Submitable, PrintableResponse, ErrorResponse
 
+transactionURL = consts.Mundipagg['URLS']['Transaction']
+
+class CreditFinancialMovement(PrintableResponse):
+    def __init__(self, ItemReference=None, AccountKey=None,
+                 FinancialMovementKey=None):
+        self.ItemReference = ItemReference
+        self.AccountKey = AccountKey
+        self.FinancialMovementKey = FinancialMovementKey
+
+    def cancel(self, smartWalletKey):
+        financialMovementUrl = "%s%s" % (transactionURL, self.FinancialMovementKey)
+        Req = Utils.JsonRequest(financialMovementUrl, {}, header={
+            "SmartWalletKey": smartWalletKey
+        })
+
+        response = Req.submit()
+        if response.status_code == 500:
+            raise ErrorResponse(response.json())
+        else:
+            return response.json()
 
 class Transaction(PrintableResponse):
     def __init__(self, CreditFinancialMovementCollection, RequestKey,
                  Errors=None):
-        self.CreditFinancialMovementCollection = CreditFinancialMovementCollection
+        self.CreditFinancialMovementCollection = [CreditFinancialMovement(**fm) for fm in CreditFinancialMovementCollection]
         self.RequestKey = RequestKey
         self.Errors = Errors
 
@@ -17,5 +38,4 @@ class TransactionCreator(Submitable):
         self.RequestKey = RequestKey
 
     def create(self, smartWalletKey):
-        transactionURL = consts.Mundipagg['URLS']['Transaction']
         return super(TransactionCreator, self).create(transactionURL, Transaction, smartWalletKey)
