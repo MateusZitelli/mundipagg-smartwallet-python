@@ -27,7 +27,7 @@ class Submitable:
         except KeyError:
             success = None
 
-        errors = responseJson.pop('Errors')
+        errors = responseJson.pop('Errors', [])
 
         # If not succeed or in case of success is None check if there is
         # errors
